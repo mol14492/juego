@@ -15,47 +15,29 @@ main:
 	@@ PUERTOS DE LECTURA @@
 	
 	@@ Arriba
-	mov r0,#17
-
-	mov r1, #0
-
-	bl SetGpioFunction
-
+	mov r0,#17
+	mov r1, #0
+	bl SetGpioFunction
 	
-	@@ Abajo
-
-	mov r0,#18
-
-	mov r1, #0
-
-	bl SetGpioFunction
-
-
-
-	@@ Izquierda
-
-	mov r0,#27
-
-	mov r1, #0
-
-	bl SetGpioFunction
-
-
-
-	@@ Derecha
-
-	mov r0,#22
-
-	mov r1, #0
-
+	@@ Abajo
+	mov r0,#18
+	mov r1, #0
+	bl SetGpioFunction
+
+	@@ Izquierda
+	mov r0,#27
+	mov r1, #0
+	bl SetGpioFunction
+
+	@@ Derecha
+	mov r0,#22
+	mov r1, #0
 	bl SetGpioFunction
 
 	@@ PUERTOS DE ESCRITURA @@
 
-	mov r0,#23
-
-	mov r1, #1
-
+	mov r0,#23
+	mov r1, #1
 	bl SetGpioFunction
 
 inicio:
@@ -64,7 +46,6 @@ inicio:
 	mov r1,#0
 	bl SetGpio
 
-atajoFin:
 	ldr r0,=terminar
 	ldr r0,[r0]
 	cmp r0,#1
@@ -148,17 +129,8 @@ fin:
 	mov r0,#23
 	mov r1,#1
 	bl SetGpio
-	
-	ldr r1,=terminar
-	mov r2,#0
-	str r2,[r1]
-	
-	bl delay
 
-	b inicio
-
-	mov r7,#1
-
+	mov r7,#1
 	swi 0
 
 
@@ -166,7 +138,7 @@ GetGpio:
 	push {lr}
 	mov r9, r0
 	ldr r6, =myloc
- 	ldr r0, [r6]
+ 	ldr r0, [r6] @ obtener direccion 
 	ldr r5,[r0,#0x34]
 	mov r7,#1
 	lsl r7,r9
@@ -245,20 +217,7 @@ movIzq:
 	str r6,[r7]
 
 	bl dibujar
-	ldr r0,=xCar
-	ldr r0,[r0]
-	ldr r1,=yCar
-	ldr r1,[r1]
-	bl lagunas
 
-	bl dibujar
-
-	ldr r0,=xCar
-	ldr r0,[r0]
-	ldr r1,=yCar
-	ldr r1,[r1]
-	bl ganar
-	
 	b fin2
 	
 movDer:
@@ -295,19 +254,7 @@ movDer:
 
 
 	bl dibujar
-	
 
-	ldr r0,=xCar
-	ldr r0,[r0]
-	ldr r1,=yCar
-	ldr r1,[r1]
-	bl lagunas
-
-	ldr r0,=xCar
-	ldr r0,[r0]
-	ldr r1,=yCar
-	ldr r1,[r1]
-	bl ganar
 	b fin2
 	
 movY:
@@ -345,19 +292,6 @@ movAbajo:
 
 	bl dibujar
 
-
-	ldr r0,=xCar
-	ldr r0,[r0]
-	ldr r1,=yCar
-	ldr r1,[r1]
-	bl lagunas
-
-	ldr r0,=xCar
-	ldr r0,[r0]
-	ldr r1,=yCar
-	ldr r1,[r1]
-	bl ganar
-
 	b fin2
 	
 movArriba:
@@ -383,19 +317,7 @@ movArriba:
 	ldr r6,[r6] 
 	mov r4, r6
 
-
 	bl dibujar
-	ldr r0,=xCar
-	ldr r0,[r0]
-	ldr r1,=yCar
-	ldr r1,[r1]
-	bl lagunas
-
-	ldr r0,=xCar
-	ldr r0,[r0]
-	ldr r1,=yCar
-	ldr r1,[r1]
-	bl ganar
 
 	b fin2
 	
@@ -420,76 +342,7 @@ noMov:
 fin2:
 	pop {pc}
 
-lagunas:
-	@@ r0 pos x
-	@@ r2 pos y
-	push {lr}
-	
-	@@ primera laguna
-	ldr r1,=limiteLagunaX1
-	ldr r1,[r1]
-	cmp r0,r1
-	bgt siLaguna1x
-	b final1
 
-siLaguna1x:
-	ldr r1,=limiteLagunaX
-	ldr r1,[r1]
-	cmp r0,r1
-	blt lagunaY
-	b final1
-
-lagunaY:
-	ldr r1,=limiteLagunaY
-	ldr r1,[r1]
-	cmp r0,r2
-	bgt mueres
-	b final1
-	
-
-mueres:
-	ldr r1,=terminar
-	mov r2,#1
-	str r2,[r1]	
-final1:
-	pop {pc}
-
-
-ganar:
-	@@ r0 pos x
-	@@ r2 pos y
-	push {lr}
-	
-	@@ primera ganaste
-	ldr r1,=ganarX
-	ldr r1,[r1]
-	cmp r0,r1
-	bgt siganaste1x
-	b final2
-
-siganaste1x:
-	ldr r1,=ganarX2
-	ldr r1,[r1]
-	cmp r0,r1
-	blt ganasteY
-	b final2
-
-ganasteY:
-	ldr r1,=ganarY
-	ldr r1,[r1]
-	cmp r0,r2
-	bgt hasGanado @@
-	b final2
-	
-
-hasGanado:
-	ldr r0,=mensaje
-	bl puts	
-final2:
-	pop {pc}
-
-
-	
 .data
 .align 2
 
@@ -522,24 +375,7 @@ xTemp:
 .global yTemp
 yTemp: 
 	.word 0
-limiteLagunaX:
-	.word 300
-limiteLagunaX1:
-	.word 153
-limiteLagunaY:
-	.word 50
-ganarX:
-	.word 510
-ganarX2:
-	.word 550
-ganarY:
-	.word 10
-
 
 terminar:
 	.word 0
-contador:
-	.word 3
-mensaje:
-	.asciz "Has GANADO!"
 .end
